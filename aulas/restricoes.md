@@ -1,4 +1,4 @@
-## Restrições de acesso
+# Restrições de acesso
 
 Muitas vezes queremos que apenas alguns utilizadores tenham acesso a certas páginas ou serviços.
 
@@ -8,7 +8,7 @@ Por uma questão de simplificação vamos considerar que cada utilizador pode te
 
 **Exercício:** Qual a desvantagem desta abordagem?
 
-### Criação das tabelas
+## Criação das tabelas
 
 Vamos iniciar a resolução deste problema criando um modelo ```Ability``` com a respetiva migração com o comando:
 
@@ -56,7 +56,7 @@ public function down(): void
 
 **Exercício:**  Implemente o modelo ```Ability``` e respetivas relações e preencha as tabelas ```users```, ```abilities``` e ```ability_user``` com dados de teste.
 
-### 
+## 
 
 Uma das potencialidades do Laravel é podermos muito facilmente ver que habilidades um utilizador tem.
 
@@ -87,5 +87,17 @@ Dependendo da versão, eventualmente, não será necessário escrever o caminho 
 
 Nota: O tinker não funciona em "realtime". Se efetuar alterações à base de dados terá de sair do tinker e voltar a entrar.
 
+## Controlar o acesso a uma rota
 
+No ficheiro ```AuthServiceProvider.php``` podemos alterar a função ```boot``` para controlar o acesso 
 
+```php
+public function boot()
+    {
+        $this->registerPolicies();
+
+        Gate::before(function ($user, $ability) {                                    
+            if ($user->id == 1) return true;
+        }
+    }
+```
