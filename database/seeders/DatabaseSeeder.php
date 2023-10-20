@@ -26,5 +26,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'pc@aeg1.pt',
             'password' => Hash::make('123')
         ]);
+
+        DB::table('users')->insertOr([
+            'name' => "Deco",
+            'email' => "deco@aeg1.pt",
+            'password' => Hash::make('password'),
+        ]);
     }
 }
