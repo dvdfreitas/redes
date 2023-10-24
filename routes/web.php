@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Log in with user 1
+Auth::loginUsingId(1);
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -20,6 +25,11 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('admin');
 })->middleware('can:admin');
+
+Route::get('/insert', function () {
+    echo "Insere utilizador";
+})->middleware('can:insert_user');
+
 
 Route::middleware([
     'auth:sanctum',

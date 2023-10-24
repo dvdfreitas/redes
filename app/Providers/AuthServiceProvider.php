@@ -21,9 +21,16 @@ class AuthServiceProvider extends ServiceProvider
      * Register any authentication / authorization services.
      */
     public function boot(): void
-    {                
+    {   
+        Gate::define('insert_user', function (User $user) {
+            return $user->abilities->pluck('slug')->contains('insert_user');
+        });
+        
         Gate::define('admin', function (User $user) {
             return $user->email == "david.freitas@aeg1.pt";
         });
+
+        
+
     }
 }

@@ -42,6 +42,14 @@ Schema::create('ability_user', function (Blueprint $table) {
 });
 ```
 
+Notas: Relembra-se que é muito útil usar as convenções do Laravel para nomear tabelas. O nome da tabela pivot é definida pelos nomes das tabelas que faz a ligação no singular e por ordem alfabética. 
+
+- abilities -> ability
+
+- users -> user
+
+Logo, o nome da tabela pivot deverá ser ```ability_user```.
+
 Note-se que este código deverá estar na função ```up()``` da migração. Repare-se que tirando partido do método ```constrained()``` não é necessário acrescentar as chaves externas, já que este método usa as convençoes para determinar a tabela e coluna que está a ser referenciada.
 
 Finalmente, devemos alterar o método ```down()``` para que a migração possa ser revertida.
@@ -89,15 +97,55 @@ Nota: O tinker não funciona em "realtime". Se efetuar alterações à base de d
 
 ## Controlar o acesso a uma rota
 
-No ficheiro ```AuthServiceProvider.php``` podemos alterar a função ```boot``` para controlar o acesso 
+No ficheiro ```AuthServiceProvider.php``` podemos alterar a função ```boot``` acrescentando a informação no código seguinte:
 
 ```php
 public function boot()
-    {
-        $this->registerPolicies();
+{
+    $this->registerPolicies();
 
-        Gate::before(function ($user, $ability) {                                    
-            if ($user->id == 1) return true;
-        }
-    }
+    Gate::define('admin', function (User $user) {
+        return $user->email == "david.freitas@aeg1.pt";
+    });
+}
 ```
+
+Podemos controlar o acesso de uma vista combinando com o seguinte em ```web.php```:
+
+```
+Route::get('/admin', function () {
+    return view('admin');
+})->middleware('can:admin');
+```
+
+Assim, apenas o utilizador com o email david.freitas@aeg1.pt poderá aceder à vista. 
+
+Obviamente, esta não é uma forma muito boa de controlar o acesso a administradores porque implica alterar o código e estar a acrescentar e retirar condições. 
+
+Uma possível solução seria tirarmos partido das "abilities" guardadas na base de dados. Assim, assumindo que existe uma habilidade "admin" e um utilizador tem essa habilidade podemos escrever o seguinte código:
+
+```php
+Gate::define('admin', function (User $user) {
+    return $user->abilities->pluck('slug')->contains('admin');
+});
+```
+
+No código anterior, o ```pluck('slug')``` retorna um "array" apenas com o campo slug da coleção e o ```contains('admin')``` verifica se a string array, faz parte do array.
+
+Assim, se o utilizador tiver a "ability" ```admin```, o resultado da função será ```true``` e ```false``` no caso contrário.
+
+## Restrições nas próprias vistas (@can)
+
+Brevemente disponível.
+
+## Conclusões
+
+Este exemplo permitiu restringir o acesso a vistas a certos utilizadores. Para isso criou-se uma tabela com habilidades (```abilities```) e uma tabela que permitiu definir que habilidades certos utilizadores possuem (```ability_user```).
+
+Esta abordagem tem, no entanto, alguns inconvenientes. É frequente que um grupo de utilizadores tenha um conjunto de habilidades. Esta abordagem implica que para cada utilizador seja atribuído um conjunto de habilidades.
+
+Para resolver esta questão poderão ser criadas <!-- HLD -->
+
+Outro problema reside ```Gate::define('admin', ...)```. Necessitamos criar uma definição para cada habilidade. 
+
+Podemos resolver esta questão <!-- HLD -->
