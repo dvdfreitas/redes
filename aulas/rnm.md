@@ -1,0 +1,1 @@
+# Resourceful Naming Conventions

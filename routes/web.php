@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Story;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +21,13 @@ Auth::loginUsingId(1);
 
 
 Route::get('/', function () {
-    return view('welcome');
+    $stories = Story::with('categories')->get();    
+    return view('welcome', ['stories' => $stories]);
+});
+
+Route::get('/categories', function () {
+    $categories = Category::all();
+    return view('categories', ['categories' => $categories]);
 });
 
 Route::get('/admin', function () {
