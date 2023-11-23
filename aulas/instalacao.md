@@ -1,5 +1,11 @@
 # Software necessário
 
+xampp - https://sourceforge.net/projects/xampp/
+git - https://git-scm.com/download/win
+composer - https://getcomposer.org/download/
+node - https://nodejs.org/en/download/current
+VS Code - https://code.visualstudio.com/
+
 # Instalação 
 
 ## Laravel
@@ -12,7 +18,11 @@ composer create-project laravel/laravel redes
 
 ## Jetstream
 
-De seguida deverá entrar na pasta do projeto (```cd redes```)e executar o seguinte comando:
+De seguida deverá entrar na pasta do projeto:
+
+```cd redes```
+
+Já dentro da pasta `redes` deverá executar o seguinte comando:
 
 ```bash
 composer require laravel/jetstream
